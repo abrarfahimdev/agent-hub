@@ -8,8 +8,8 @@ import { createRoot } from 'react-dom/client'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 
 // Layouts
-import MainLayout from './layouts/MainLayouts.jsx'
-import AdminLayout from './layouts/AdminLayouts.jsx'
+import MainLayout from './layouts/MainLayout.jsx'
+import AdminLayout from './layouts/AdminLayout.jsx'
 
 // Pages
 import Home from './Pages/Home.jsx'
@@ -20,10 +20,10 @@ import About from './Pages/About.jsx'
 
 // Admin Pages
 import AdminPanel from './Pages/Admin/AdminPanel.jsx'
-import Dashboard from './pages/Admin/Dashboard.jsx'
-import Agents from './pages/Admin/Agents.jsx'
-import Reviews from './pages/Admin/Reviews.jsx'
-import Contacts from './pages/Admin/Contacts.jsx'
+import Dashboard from './Pages/Admin/Dashboard.jsx'
+import Agents from './Pages/Admin/Agents.jsx'
+import Reviews from './Pages/Admin/Reviews.jsx'
+import Contacts from './Pages/Admin/Contacts.jsx'
 
 import './index.css'
 import './App.css'
@@ -31,7 +31,7 @@ import './App.css'
 // ── ROUTER CONFIG ─────────────────────────
 const router = createBrowserRouter([
   {
-    element: <MainLayout />,
+    element: <MainLayout/>,
     children: [
       { path: '/', element: <Home /> },
       { path: '/browse', element: <Browse /> },
@@ -41,7 +41,7 @@ const router = createBrowserRouter([
     ]
   },
   {
-    element: <AdminLayout />,
+    element: <AdminLayout/>,
     children: [
       {
         path: '/admin',

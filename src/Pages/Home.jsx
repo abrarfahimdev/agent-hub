@@ -6,7 +6,7 @@
 import { Link } from 'react-router-dom'
 import { categories } from '../data/agents'
 import { useFeaturedAgents } from '../hooks/useAgents'
-import AgentCard from '../components/AgentCard'
+import AgentCard from '../Components/AgentCard'
 
 // Loading skeleton component
 const AgentSkeleton = () => (
