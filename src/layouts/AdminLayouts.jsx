@@ -8,7 +8,7 @@ import { Outlet } from 'react-router-dom'
 const AdminLayout = () => {
   return (
     <div className="app">
-      <main className="main">
+      <main className="admin-main">
         <Outlet />
       </main>
     </div>

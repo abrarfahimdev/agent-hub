@@ -3,16 +3,65 @@
 // Full details, pricing and contact for agent
 // ============================================
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { useAgent } from '../hooks/useAgents'
 import { supabase } from '../lib/supabase'
 
+// ── REVIEWS LIST COMPONENT ─────────────────
+const ReviewsList = ({ agentId }) => {
+  const [reviews, setReviews] = useState([])
+  const [loading, setLoading] = useState(true)
 
+  useEffect(() => {
+    const fetchReviews = async () => {
+      const { data } = await supabase
+        .from('reviews')
+        .select('*')
+        .eq('agent_id', agentId)
+        .eq('approved', true)
+        .order('created_at', { ascending: false })
+      setReviews(data || [])
+      setLoading(false)
+    }
+    fetchReviews()
+  }, [agentId])
+
+  if (loading) return (
+    <p style={{ color: 'var(--text-muted)', fontSize: '14px' }}>Loading reviews...</p>
+  )
+
+  if (reviews.length === 0) return (
+    <div className="no-reviews">
+      <p>No reviews yet. Be the first to review!</p>
+    </div>
+  )
+
+  return (
+    <div className="reviews-list">
+      {reviews.map(review => (
+        <div className="review-card" key={review.id}>
+          <div className="review-header">
+            <span className="review-avatar">👤</span>
+            <div>
+              <p className="review-name">{review.reviewer_name}</p>
+              <p className="review-date">
+                {new Date(review.created_at).toLocaleDateString()}
+              </p>
+            </div>
+            <div className="review-stars">{'⭐'.repeat(review.rating)}</div>
+          </div>
+          <p className="review-text">{review.comment}</p>
+        </div>
+      ))}
+    </div>
+  )
+}
+
+// ── MAIN COMPONENT ─────────────────────────
 const AgentDetail = () => {
   const { id } = useParams()
   const { agent, loading, error } = useAgent(id)
-  console.log(agent)
 
   // Review form state
   const [reviewForm, setReviewForm] = useState({
@@ -120,16 +169,18 @@ const AgentDetail = () => {
               <div className="pf-item">✅ Cancel Anytime</div>
             </div>
             
-<a href={`https://wa.me/8801937239981?text=Hi! I want to rent ${agent.name} for $${agent.price}/${agent.price_type}`}
+           <a   href={`https://wa.me/8801937239981?text=Hi! I want to rent ${agent.name} for $${agent.price}/${agent.price_type}`}
               target="_blank"
+              rel="noreferrer"
               className="btn-rent-big"
               style={{ background: agent.color }}
             >
               Rent Now — ${agent.price}/{agent.price_type}
             </a>
             
-           <a   href={agent.demo_url}
+          <a    href={agent.demo_url}
               target="_blank"
+              rel="noreferrer"
               className="btn-demo-big"
             >
               Try Free Demo First 🎯
@@ -185,12 +236,18 @@ const AgentDetail = () => {
               </div>
             </div>
 
+            {/* Reviews List */}
+            <div className="detail-section">
+              <h2>Reviews ({agent.reviews_count})</h2>
+              <ReviewsList agentId={id} />
+            </div>
+
             {/* Leave a Review */}
             <div className="detail-section">
               <h2>Leave a Review</h2>
               {reviewSuccess && (
                 <div className="review-success">
-                  ✅ Thank you for your review!
+                  ✅ Thank you! Your review is pending approval.
                 </div>
               )}
               <form className="review-form" onSubmit={handleReviewSubmit}>
@@ -277,8 +334,9 @@ const AgentDetail = () => {
                 </div>
               </div>
               
-               <a href={`https://wa.me/${agent.seller_whatsapp}?text=Hi! I want to know more about ${agent.name}`}
+              <a  href={`https://wa.me/${agent.seller_whatsapp}?text=Hi! I want to know more about ${agent.name}`}
                 target="_blank"
+                rel="noreferrer"
                 className="btn-contact"
               >
                 📱 Contact Seller
@@ -297,31 +355,34 @@ const AgentDetail = () => {
             </div>
 
             {/* Share Card */}
-            <div className="share-card">
-              <h3>📤 Share This Agent</h3>
-              <div className="share-buttons">
-                
-                <a  href={`https://wa.me/?text=Check out ${agent.name} on AgentHub! ${window.location.href}`}
-                  target="_blank"
-                  className="share-btn whatsapp"
-                >
-                  📱 WhatsApp
-                </a>
-                
-               <a   href={`https://twitter.com/intent/tweet?text=Check out ${agent.name} - ${agent.tagline}&url=${window.location.href}`}
-                  target="_blank"
-                  className="share-btn twitter"
-                >
-                  🐦 Twitter
-                </a>
-              </div>
+{/* Share Card */}
+<div className="share-card">
+  <h3>📤 Share This Agent</h3>
+  <div className="share-buttons">
+    
+    <a  href={`https://wa.me/?text=Check out ${encodeURIComponent(agent.name)} on AgentHub! ${encodeURIComponent(window.location.href)}`}
+      target="_blank"
+      rel="noreferrer"
+      className="share-btn whatsapp"
+    >
+      📱 WhatsApp
+    </a>
+    
+  <a    href={`https://twitter.com/intent/tweet?text=${encodeURIComponent('Check out ' + agent.name + ' - ' + agent.tagline)}&url=${encodeURIComponent(window.location.href)}`}
+      target="_blank"
+      rel="noreferrer"
+      className="share-btn twitter"
+    >
+      🐦 Twitter
+    </a>
+  </div>
+</div>
             </div>
 
           </div>
         </div>
-
       </div>
-    </div>
+    
   )
 }
 

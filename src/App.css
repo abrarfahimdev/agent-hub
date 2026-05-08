@@ -454,7 +454,7 @@ body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-
 /* ============================================
    ADMIN LAYOUT
    ============================================ */
-.admin-main { min-height: 100vh; background: var(--bg); }
+.admin-main { min-height: 100vh; background: var(--bg); padding-top: 0 !important; }
 .admin-wrapper { display: flex; min-height: 100vh; background: var(--bg); }
 
 /* Sidebar */

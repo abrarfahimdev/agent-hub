@@ -42,13 +42,11 @@ const Dashboard = () => {
 
   return (
     <div className="admin-page">
-
       {/* ── PAGE HEADER ───────────────────── */}
       <div className="admin-page-header">
         <h1>Dashboard</h1>
         <p>Welcome back! Here's what's happening.</p>
       </div>
-
       {/* ── STATS GRID ────────────────────── */}
       <div className="dashboard-stats">
         {[
