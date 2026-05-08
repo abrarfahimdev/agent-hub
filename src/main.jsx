@@ -12,6 +12,12 @@ import AgentDetail from './Pages/AgentDetail.jsx';
 import Submit from './Pages/Submit.jsx';
 import Home from './Pages/Home.jsx';
 import About from './pages/About.jsx';
+import AdminLayout from './layouts/AdminLayouts.jsx';
+import AdminPanel from './Pages/Admin/AdminPanel.jsx';
+import Dashboard from './Pages/Admin/Dashboard.jsx';
+import Agents from './Pages/Admin/Agents.jsx';
+import Reviews from './Pages/Admin/Reviews.jsx';
+import Contacts from './Pages/Admin/Contacts.jsx';
 
 const router = createBrowserRouter([
   {
@@ -29,9 +35,18 @@ const router = createBrowserRouter([
     // Admin layout — no Navbar/Footer
     element: <AdminLayout />,
     children: [
-      { path: '/admin', element: <AdminPanel /> },
-    ]
-  }
+      {
+        path: '/admin',
+        element: <AdminPanel />,
+        children: [
+          { path: 'dashboard', element: <Dashboard /> },
+          { path: 'agents', element: <Agents /> },
+          { path: 'reviews', element: <Reviews /> },
+          { path: 'contacts', element: <Contacts /> },
+        ]
+      }]
+    }
+ 
 ]);
 
 createRoot(document.getElementById('root')).render(
