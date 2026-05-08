@@ -7,7 +7,7 @@ import { useState, useEffect } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { categories } from '../data/agents'
 import { useAgents } from '../hooks/useAgents'
-import AgentCard from '../components/AgentCard'
+import AgentCard from '../Components/AgentCard'
 
 // Loading skeleton
 const AgentSkeleton = () => (
