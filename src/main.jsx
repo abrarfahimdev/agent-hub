@@ -1,38 +1,46 @@
+// ============================================
+// MAIN ENTRY POINT
+// React Router v7 setup with layouts
+// ============================================
+
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import './index.css'
-import App from './App.jsx'
-import React from "react";
-import ReactDOM from "react-dom/client";
-import { createBrowserRouter } from "react-router";
-import { RouterProvider } from "react-router/dom";
-import MainLayout from './layouts/MainLayouts.jsx';
-import Browse from './Pages/Browse.jsx';
-import AgentDetail from './Pages/AgentDetail.jsx';
-import Submit from './Pages/Submit.jsx';
-import Home from './Pages/Home.jsx';
-// import About from './Pages/About.jsx';
-import AdminLayout from './layouts/AdminLayouts.jsx';
-import AdminPanel from './Pages/Admin/AdminPanel.jsx';
-import Dashboard from './Pages/Admin/Dashboard.jsx';
-import Agents from './Pages/Admin/Agents.jsx';
-import Reviews from './Pages/Admin/Reviews.jsx';
-import Contacts from './Pages/Admin/Contacts.jsx';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 
+// Layouts
+import MainLayout from './layouts/MainLayouts.jsx'
+import AdminLayout from './layouts/AdminLayouts.jsx'
+
+// Pages
+import Home from './Pages/Home.jsx'
+import Browse from './Pages/Browse.jsx'
+import AgentDetail from './Pages/AgentDetail.jsx'
+import Submit from './Pages/Submit.jsx'
+import About from './Pages/About.jsx'
+
+// Admin Pages
+import AdminPanel from './Pages/Admin/AdminPanel.jsx'
+import Dashboard from './pages/Admin/Dashboard.jsx'
+import Agents from './pages/Admin/Agents.jsx'
+import Reviews from './pages/Admin/Reviews.jsx'
+import Contacts from './pages/Admin/Contacts.jsx'
+
+import './index.css'
+import './App.css'
+
+// ── ROUTER CONFIG ─────────────────────────
 const router = createBrowserRouter([
   {
-   // Main layout — with Navbar and Footer
     element: <MainLayout />,
     children: [
       { path: '/', element: <Home /> },
-      { path: '/browse', element: <Browse/> },
+      { path: '/browse', element: <Browse /> },
       { path: '/agent/:id', element: <AgentDetail /> },
-      { path: '/submit', element: <Submit/> },
-      // { path: '/about', element: <About/> },
+      { path: '/submit', element: <Submit /> },
+      { path: '/about', element: <About /> },
     ]
   },
   {
-    // Admin layout — no Navbar/Footer
     element: <AdminLayout />,
     children: [
       {
@@ -44,13 +52,14 @@ const router = createBrowserRouter([
           { path: 'reviews', element: <Reviews /> },
           { path: 'contacts', element: <Contacts /> },
         ]
-      }]
-    }
- 
-]);
+      }
+    ]
+  }
+])
 
+// ── RENDER APP ─────────────────────────────
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-  <RouterProvider router={router} />,
-  </StrictMode>,
+    <RouterProvider router={router} />
+  </StrictMode>
 )
