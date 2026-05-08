@@ -1,8 +1,3 @@
-// ============================================
-// USEAGENTS HOOK
-// Fetch agents from Supabase database
-// ============================================
-
 import { useState, useEffect } from 'react'
 import { supabase } from '../lib/supabase'
 
@@ -17,24 +12,19 @@ export const useAgents = (category = null, search = '') => {
       try {
         setLoading(true)
 
-        // Start with base query
         let query = supabase
           .from('agents')
           .select('*')
           .eq('approved', true)
           .order('featured', { ascending: false })
 
-        // Apply category filter
         if (category && category !== 'All') {
           query = query.eq('category', category)
         }
 
         const { data, error } = await query
-        console.log('All agents:', data?.length, 'Error:', error)
-
         if (error) throw error
 
-        // Apply search filter client side
         let result = data || []
         if (search.trim()) {
           const s = search.toLowerCase()
@@ -48,7 +38,6 @@ export const useAgents = (category = null, search = '') => {
 
         setAgents(result)
       } catch (err) {
-        console.error('useAgents error:', err)
         setError(err.message)
       } finally {
         setLoading(false)
@@ -80,7 +69,7 @@ export const useFeaturedAgents = () => {
         if (error) throw error
         setAgents(data || [])
       } catch (err) {
-        console.error('useFeaturedAgents error:', err)
+        console.error(err)
       } finally {
         setLoading(false)
       }
