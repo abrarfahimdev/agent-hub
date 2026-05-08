@@ -16,43 +16,46 @@ import './App.css'
 
 function App() {
 
-  // Theme state — default dark
-  const [theme, setTheme] = useState(
-    () => localStorage.getItem('agenthub-theme') || 'dark'
-  )
+  // // Theme state — default dark
+  // const [theme, setTheme] = useState(
+  //   () => localStorage.getItem('agenthub-theme') || 'dark'
+  // )
 
-  // Apply theme to body
-  useEffect(() => {
-    document.body.setAttribute('data-theme', theme)
-    localStorage.setItem('agenthub-theme', theme)
-  }, [theme])
+  // // Apply theme to body
+  // useEffect(() => {
+  //   document.body.setAttribute('data-theme', theme)
+  //   localStorage.setItem('agenthub-theme', theme)
+  // }, [theme])
 
-  // Toggle theme
-  const toggleTheme = () => setTheme(t => t === 'dark' ? 'light' : 'dark')
+  // // Toggle theme
+  // const toggleTheme = () => setTheme(t => t === 'dark' ? 'light' : 'dark')
 
   return (
-    <BrowserRouter>
-      <div className="app">
+     <></>
+     // <BrowserRouter>
+    // //   <div className="app">
 
-        {/* Navbar on every page */}
-        <Navbar theme={theme} toggleTheme={toggleTheme} />
+    // //     {/* Navbar on every page */}
+    // //     <Navbar theme={theme} toggleTheme={toggleTheme} />
 
-        {/* Page content */}
-        <main className="main">
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/browse" element={<Browse />} />
-            <Route path="/agent/:id" element={<AgentDetail />} />
-            <Route path="/submit" element={<Submit />} />
-            <Route path="/about" element={<About />} />
-          </Routes>
-        </main>
+    // //     {/* Page content */}
+    // //     <main className="main">
+    // //       <Routes>
+    // //         <Route path="/" element={<Home />} />
+    // //         <Route path="/browse" element={<Browse />} />
+    // //         <Route path="/agent/:id" element={<AgentDetail />} />
+    // //         <Route path="/submit" element={<Submit />} />
+    // //         <Route path="/about" element={<About />} />
+    // //       </Routes>
+    // //     </main>
 
-        {/* Footer on every page */}
-        <Footer />
+    // //     {/* Footer on every page */}
+    // //     <Footer />
 
-      </div>
-    </BrowserRouter>
+    // //   </div>
+    // // </BrowserRouter>
+    
+    
   )
 }
 
