@@ -11,7 +11,7 @@ import Browse from './Pages/Browse.jsx';
 import AgentDetail from './Pages/AgentDetail.jsx';
 import Submit from './Pages/Submit.jsx';
 import Home from './Pages/Home.jsx';
-import About from './Pages/About.jsx';
+// import About from './Pages/About.jsx';
 import AdminLayout from './layouts/AdminLayouts.jsx';
 import AdminPanel from './Pages/Admin/AdminPanel.jsx';
 import Dashboard from './Pages/Admin/Dashboard.jsx';
@@ -28,7 +28,7 @@ const router = createBrowserRouter([
       { path: '/browse', element: <Browse/> },
       { path: '/agent/:id', element: <AgentDetail /> },
       { path: '/submit', element: <Submit/> },
-      { path: '/about', element: <About/> },
+      // { path: '/about', element: <About/> },
     ]
   },
   {
