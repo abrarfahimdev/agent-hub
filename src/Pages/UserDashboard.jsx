@@ -151,6 +151,8 @@ const UserDashboard = () => {
                 { icon: '✅', label: 'Approved', value: myAgents.filter(a => a.approved).length, color: '#34d399' },
                 { icon: '⏳', label: 'Pending', value: myAgents.filter(a => !a.approved).length, color: '#fbbf24' },
                 { icon: '❤️', label: 'Wishlist', value: wishlist.length, color: '#f43f5e' },
+                { icon: '⭐', label: 'Featured', value: myAgents.filter(a => a.featured).length, color: '#f59e0b' },
+{ icon: '👁️', label: 'Total Views', value: myAgents.reduce((sum, a) => sum + (a.views || 0), 0), color: '#60a5fa' },
               ].map((stat, i) => (
                 <div className="user-stat-card" key={i} style={{ borderColor: stat.color + '30' }}>
                   <div className="user-stat-icon" style={{ background: stat.color + '15', color: stat.color }}>
@@ -252,6 +254,8 @@ const UserDashboard = () => {
                         <span>{agent.category}</span>
                         <span>${agent.price}/{agent.price_type}</span>
                         <span>⭐ {agent.rating}</span>
+                         <span>👁️ {agent.views || 0} views</span>
+    <span>💬 {agent.reviews_count || 0} reviews</span>
                       </div>
                     </div>
                     <div className="dashboard-agent-card-footer">
