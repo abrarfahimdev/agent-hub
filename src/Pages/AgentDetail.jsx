@@ -9,6 +9,138 @@ import { useAgent } from '../hooks/useAgents'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../contexts/AuthContext'
 
+
+// ── CONTACT FORM COMPONENT ─────────────────
+// ── CONTACT FORM COMPONENT ─────────────────
+const ContactForm = ({ agentName, agentEmail }) => {
+  const { user, profile } = useAuth()
+  const [form, setForm] = useState({
+    name: profile?.full_name || '',
+    email: user?.email || '',
+    message: ''
+  })
+  const [sending, setSending] = useState(false)
+  const [sent, setSent] = useState(false)
+  const [error, setError] = useState('')
+  const [myMessages, setMyMessages] = useState([])
+
+  // Fetch user's messages for this agent
+  useEffect(() => {
+    if (user) fetchMyMessages()
+  }, [user])
+const fetchMyMessages = async () => {
+  const { data, error } = await supabase
+    .from('contacts')
+    .select('*')
+    .eq('email', user.email)
+    .order('created_at', { ascending: false })
+  console.log('My messages:', data)
+  console.log('My messages error:', error)
+  setMyMessages(data || [])
+}
+
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    try {
+      setSending(true)
+      setError('')
+      const { error } = await supabase
+        .from('contacts')
+        .insert([{
+          name: form.name,
+          email: form.email,
+          agent_name: agentName,
+          message: form.message
+        }])
+      if (error) throw error
+      setSent(true)
+      setForm({ ...form, message: '' })
+      fetchMyMessages()
+      setTimeout(() => setSent(false), 3000)
+    } catch (err) {
+      setError(err.message)
+    } finally {
+      setSending(false)
+    }
+  }
+
+  return (
+    <div>
+      {/* Previous messages and replies */}
+      {myMessages.length > 0 && (
+        <div className="my-messages">
+          {myMessages.map(msg => (
+            <div className="my-message-item" key={msg.id}>
+              <div className="my-message-bubble">
+                <p className="my-message-label">You:</p>
+                <p>{msg.message}</p>
+                <p className="my-message-date">
+                  {new Date(msg.created_at).toLocaleDateString()}
+                </p>
+              </div>
+              {msg.reply && (
+                <div className="reply-bubble">
+                  <p className="reply-label">Seller replied:</p>
+                  <p>{msg.reply}</p>
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Success message */}
+      {sent && (
+        <div className="contact-success">
+          ✅ Message sent! The seller will reply soon.
+        </div>
+      )}
+
+      {/* Contact Form */}
+      <form onSubmit={handleSubmit} className="contact-form">
+        {error && <div className="auth-error">⚠️ {error}</div>}
+        <div className="form-group">
+          <label>Your Name</label>
+          <input
+            type="text"
+            placeholder="Your name"
+            value={form.name}
+            onChange={e => setForm({ ...form, name: e.target.value })}
+            required
+          />
+        </div>
+        <div className="form-group">
+          <label>Your Email</label>
+          <input
+            type="email"
+            placeholder="your@email.com"
+            value={form.email}
+            onChange={e => setForm({ ...form, email: e.target.value })}
+            required
+          />
+        </div>
+        <div className="form-group">
+          <label>Message</label>
+          <textarea
+            placeholder={`Hi, I'm interested in ${agentName}...`}
+            rows={4}
+            value={form.message}
+            onChange={e => setForm({ ...form, message: e.target.value })}
+            required
+          />
+        </div>
+        <button
+          type="submit"
+          className="btn-primary full"
+          disabled={sending}
+        >
+          {sending ? 'Sending...' : 'Send Message 📧'}
+        </button>
+      </form>
+    </div>
+  )
+}
+
 // ── REVIEWS LIST COMPONENT ─────────────────
 const ReviewsList = ({ agentId }) => {
   const [reviews, setReviews] = useState([])
@@ -543,6 +675,21 @@ const AgentDetail = () => {
                 <p>✅ Cancel anytime</p>
               </div>
             </div>
+
+            {/* Contact Form — hide for owner */}
+{/* Contact Form — hide for owner */}
+{!isOwner && (
+  <div className="contact-card">
+    <h3>📧 Send Message</h3>
+    {!user ? (
+      <div className="login-to-review">
+        <p>Please <Link to="/login">login</Link> to send a message.</p>
+      </div>
+    ) : (
+      <ContactForm agentName={agent.name} agentEmail={agent.seller_email} />
+    )}
+  </div>
+)}
 
             {/* Share Card */}
             <div className="share-card">
