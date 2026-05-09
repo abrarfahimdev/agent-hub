@@ -32,7 +32,7 @@ import Contacts from './Pages/Admin/Contacts.jsx'
 
 // Protected Route
 import ProtectedRoute from './Components/ProtectedRoute.jsx'
-
+import AdminRoute from './Components/AdminRoute.jsx'
 import './index.css'
 import './App.css'
 
@@ -64,8 +64,12 @@ const router = createBrowserRouter([
     element: <AdminLayout />,
     children: [
       {
-        path: '/admin',
-        element: <AdminPanel />,
+      path: '/admin',
+      element: (
+        <AdminRoute>
+          <AdminPanel />
+        </AdminRoute>
+      ),
         children: [
           { path: 'dashboard', element: <Dashboard /> },
           { path: 'agents', element: <Agents /> },

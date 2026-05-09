@@ -65,14 +65,16 @@ export const AuthProvider = ({ children }) => {
   }
 
   // Sign in
-  const signIn = async (email, password) => {
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email,
-      password
-    })
-    return { data, error }
-  }
+const signIn = async (email, password) => {
+  const { data, error } = await supabase.auth.signInWithPassword({
+    email,
+    password
+  })
+  return { data, error }
+}
 
+// Check if user is admin
+const isAdmin = profile?.role === 'admin'
   // Sign out
   const signOut = async () => {
     await supabase.auth.signOut()

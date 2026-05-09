@@ -102,6 +102,11 @@ const Navbar = ({ theme, toggleTheme }) => {
                   <Link to="/submit" className="nav-dropdown-item">
                     ➕ Submit Agent
                   </Link>
+                  {profile?.role === 'admin' && (
+  <Link to="/admin/dashboard" className="nav-dropdown-item admin-link">
+    🛡️ Admin Panel
+  </Link>
+)}
                   <button
                     className="nav-dropdown-item logout"
                     onClick={handleLogout}
