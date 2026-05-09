@@ -14,14 +14,19 @@ const UserDashboard = () => {
 
   // State
   const [myAgents, setMyAgents] = useState([])
+  const [wishlist, setWishlist] = useState([])
   const [loading, setLoading] = useState(true)
   const [activeTab, setActiveTab] = useState('overview')
 
-  // Fetch user's submitted agents
+  // Fetch data on load
   useEffect(() => {
-    if (user) fetchMyAgents()
+    if (user) {
+      fetchMyAgents()
+      fetchWishlist()
+    }
   }, [user])
 
+  // Fetch user's submitted agents
   const fetchMyAgents = async () => {
     try {
       const { data } = await supabase
@@ -34,6 +39,20 @@ const UserDashboard = () => {
       console.error(err)
     } finally {
       setLoading(false)
+    }
+  }
+
+  // Fetch wishlist
+  const fetchWishlist = async () => {
+    try {
+      const { data } = await supabase
+        .from('wishlists')
+        .select('*, agents(*)')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false })
+      setWishlist(data || [])
+    } catch (err) {
+      console.error(err)
     }
   }
 
@@ -84,6 +103,15 @@ const UserDashboard = () => {
             )}
           </button>
           <button
+            className={`dashboard-link ${activeTab === 'wishlist' ? 'active' : ''}`}
+            onClick={() => setActiveTab('wishlist')}
+          >
+            <span>❤️</span> Wishlist
+            {wishlist.length > 0 && (
+              <span className="dashboard-badge">{wishlist.length}</span>
+            )}
+          </button>
+          <button
             className={`dashboard-link ${activeTab === 'profile' ? 'active' : ''}`}
             onClick={() => setActiveTab('profile')}
           >
@@ -122,7 +150,7 @@ const UserDashboard = () => {
                 { icon: '🤖', label: 'My Agents', value: myAgents.length, color: '#818cf8' },
                 { icon: '✅', label: 'Approved', value: myAgents.filter(a => a.approved).length, color: '#34d399' },
                 { icon: '⏳', label: 'Pending', value: myAgents.filter(a => !a.approved).length, color: '#fbbf24' },
-                { icon: '⭐', label: 'Featured', value: myAgents.filter(a => a.featured).length, color: '#f59e0b' },
+                { icon: '❤️', label: 'Wishlist', value: wishlist.length, color: '#f43f5e' },
               ].map((stat, i) => (
                 <div className="user-stat-card" key={i} style={{ borderColor: stat.color + '30' }}>
                   <div className="user-stat-icon" style={{ background: stat.color + '15', color: stat.color }}>
@@ -155,10 +183,10 @@ const UserDashboard = () => {
                   <h4>My Agents</h4>
                   <p>View and manage your submitted agents</p>
                 </button>
-                <button className="quick-card" onClick={() => setActiveTab('profile')}>
-                  <span>👤</span>
-                  <h4>Edit Profile</h4>
-                  <p>Update your personal information</p>
+                <button className="quick-card" onClick={() => setActiveTab('wishlist')}>
+                  <span>❤️</span>
+                  <h4>My Wishlist</h4>
+                  <p>View your saved agents</p>
                 </button>
               </div>
             </div>
@@ -227,8 +255,62 @@ const UserDashboard = () => {
                       </div>
                     </div>
                     <div className="dashboard-agent-card-footer">
-                      <Link to={`/agent/${agent.id}`} className="btn-outline" style={{ fontSize: '13px', padding: '8px 16px' }}>
+                      <Link
+                        to={`/agent/${agent.id}`}
+                        className="btn-outline"
+                        style={{ fontSize: '13px', padding: '8px 16px' }}
+                      >
                         View →
+                      </Link>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* ── WISHLIST TAB ──────────────────── */}
+        {activeTab === 'wishlist' && (
+          <div className="dashboard-section">
+            <div className="dashboard-page-header">
+              <h1>My Wishlist ❤️</h1>
+              <p>Agents you have saved</p>
+            </div>
+
+            {wishlist.length === 0 ? (
+              <div className="dashboard-empty">
+                <span>❤️</span>
+                <h3>No saved agents yet!</h3>
+                <p>Browse agents and save your favorites.</p>
+                <Link to="/browse" className="btn-primary">Browse Agents</Link>
+              </div>
+            ) : (
+              <div className="dashboard-agents-grid">
+                {wishlist.map(item => (
+                  <div className="dashboard-agent-card" key={item.id}>
+                    <div className="dashboard-agent-card-header" style={{ background: item.agents?.color + '15' }}>
+                      <div className="dashboard-agent-icon" style={{ background: item.agents?.color + '25', color: item.agents?.color }}>
+                        {item.agents?.icon}
+                      </div>
+                      <span className="dashboard-status approved">❤️ Saved</span>
+                    </div>
+                    <div className="dashboard-agent-card-body">
+                      <h3>{item.agents?.name}</h3>
+                      <p className="agent-tagline">{item.agents?.tagline}</p>
+                      <div className="dashboard-agent-meta">
+                        <span>{item.agents?.category}</span>
+                        <span>${item.agents?.price}/{item.agents?.price_type}</span>
+                        <span>⭐ {item.agents?.rating}</span>
+                      </div>
+                    </div>
+                    <div className="dashboard-agent-card-footer">
+                      <Link
+                        to={`/agent/${item.agents?.id}`}
+                        className="btn-primary"
+                        style={{ fontSize: '13px', padding: '8px 16px', display: 'block', textAlign: 'center', width: '100%' }}
+                      >
+                        View Agent →
                       </Link>
                     </div>
                   </div>
@@ -271,10 +353,18 @@ const UserDashboard = () => {
                   <label>Total Agents</label>
                   <p>{myAgents.length} agents submitted</p>
                 </div>
+                <div className="profile-field">
+                  <label>Wishlist</label>
+                  <p>{wishlist.length} agents saved</p>
+                </div>
               </div>
             </div>
 
-            <button className="btn-outline" onClick={handleLogout} style={{ marginTop: '24px' }}>
+            <button
+              className="btn-outline"
+              onClick={handleLogout}
+              style={{ marginTop: '24px' }}
+            >
               🚪 Logout
             </button>
           </div>

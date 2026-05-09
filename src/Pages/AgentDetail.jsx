@@ -37,6 +37,35 @@ const ReviewsList = ({ agentId }) => {
       <p>No reviews yet. Be the first to review!</p>
     </div>
   )
+  const toggleWishlist = async () => {
+  if (!user) {
+    navigate('/login')
+    return
+  }
+  try {
+    setWishlistLoading(true)
+    if (wishlisted) {
+      const { error } = await supabase
+        .from('wishlists')
+        .delete()
+        .eq('user_id', user.id)
+        .eq('agent_id', id)
+      console.log('Delete error:', error)
+      setWishlisted(false)
+    } else {
+      const { data, error } = await supabase
+        .from('wishlists')
+        .insert([{ user_id: user.id, agent_id: id }])
+      console.log('Insert data:', data)
+      console.log('Insert error:', error)
+      if (!error) setWishlisted(true)
+    }
+  } catch (err) {
+    console.error('Wishlist error:', err)
+  } finally {
+    setWishlistLoading(false)
+  }
+}
 
   return (
     <div className="reviews-list">
