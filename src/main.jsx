@@ -6,10 +6,12 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+import { AuthProvider } from './contexts/AuthContext.jsx'
 
 // Layouts
 import MainLayout from './layouts/MainLayout.jsx'
 import AdminLayout from './layouts/AdminLayout.jsx'
+import UserLayout from './layouts/UserLayout.jsx'
 
 // Pages
 import Home from './Pages/Home.jsx'
@@ -17,6 +19,9 @@ import Browse from './Pages/Browse.jsx'
 import AgentDetail from './Pages/AgentDetail.jsx'
 import Submit from './Pages/Submit.jsx'
 import About from './Pages/About.jsx'
+import Login from './Pages/Login.jsx'
+import Register from './Pages/Register.jsx'
+import UserDashboard from './Pages/UserDashboard.jsx'
 
 // Admin Pages
 import AdminPanel from './Pages/Admin/AdminPanel.jsx'
@@ -25,23 +30,38 @@ import Agents from './Pages/Admin/Agents.jsx'
 import Reviews from './Pages/Admin/Reviews.jsx'
 import Contacts from './Pages/Admin/Contacts.jsx'
 
+// Protected Route
+import ProtectedRoute from './Components/ProtectedRoute.jsx'
+
 import './index.css'
 import './App.css'
 
 // ── ROUTER CONFIG ─────────────────────────
 const router = createBrowserRouter([
   {
-    element: <MainLayout/>,
+    // Main layout — with Navbar and Footer
+    element: <MainLayout />,
     children: [
       { path: '/', element: <Home /> },
       { path: '/browse', element: <Browse /> },
       { path: '/agent/:id', element: <AgentDetail /> },
       { path: '/submit', element: <Submit /> },
       { path: '/about', element: <About /> },
+      { path: '/login', element: <Login /> },
+      { path: '/register', element: <Register /> },
+     
     ]
   },
   {
-    element: <AdminLayout/>,
+  // User layout — protected, no Navbar/Footer
+  element: <UserLayout />,
+  children: [
+      { path: '/dashboard', element: <UserDashboard /> },
+    ]
+},
+  {
+    // Admin layout — no Navbar/Footer
+    element: <AdminLayout />,
     children: [
       {
         path: '/admin',
@@ -60,6 +80,8 @@ const router = createBrowserRouter([
 // ── RENDER APP ─────────────────────────────
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <RouterProvider router={router} />
+    <AuthProvider>
+      <RouterProvider router={router} />
+    </AuthProvider>
   </StrictMode>
 )
